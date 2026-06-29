@@ -1,0 +1,98 @@
+/* Animações globais */
+@keyframes shimmer {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+.animate-shimmer {
+  animation: shimmer 2s infinite;
+}
+
+/* Estilos para Masonry Layout */
+.masonry-grid {
+  display: columns;
+  column-gap: 1.5rem;
+}
+
+.masonry-item {
+  break-inside: avoid;
+  margin-bottom: 1.5rem;
+}
+
+/* Smooth scroll */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Seleção de texto */
+::selection {
+  background-color: rgba(44, 44, 44, 0.2);
+  color: inherit;
+}
+
+/* Scrollbar customizada */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 0, 0, 0.3);
+}
+
+/* Imagens responsivas com efeito blur-up */
+.image-blur-wrapper {
+  position: relative;
+  overflow: hidden;
+}
+
+.image-blur-placeholder {
+  filter: blur(20px);
+  transform: scale(1.1);
+  transition: opacity 0.4s ease;
+}
+
+.image-blur-loaded {
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+
+.image-blur-loaded.loaded {
+  opacity: 1;
+}
+
+/* Parallax helper */
+.parallax {
+  transform: translateZ(0);
+  will-change: transform;
+}
+
+/* Glass morphism */
+.glass {
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+}
+
+.glass-dark {
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+}
+
+/* Text balance */
+.text-balance {
+  text-wrap: balance;
+}
