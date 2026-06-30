@@ -1,5 +1,4 @@
 import { Container } from '@/components/ui/Container';
-import { Button } from '@/components/ui/Button';
 import { Home } from 'lucide-react';
 
 export default function NotFound() {
@@ -10,21 +9,20 @@ export default function NotFound() {
           <h1 className="text-[8rem] lg:text-[12rem] font-bold text-text-primary leading-none mb-4">
             404
           </h1>
-          <h2 className="text-heading-1 font-semibold text-text-primary mb-4">
+          <h2 className="text-2xl font-semibold text-text-primary mb-4">
             Página não encontrada
           </h2>
-          <p className="text-body-lg text-text-secondary mb-8 max-w-lg mx-auto">
+          <p className="text-lg text-text-secondary mb-8 max-w-lg mx-auto">
             A página que você está procurando pode ter sido removida ou 
             o endereço pode estar incorreto.
           </p>
-          <Button
+          <a
             href="/"
-            variant="primary"
-            size="lg"
-            icon={<Home className="w-5 h-5" />}
+            className="inline-flex items-center gap-2 px-6 py-3 rounded-lg bg-white text-black font-medium hover:bg-white/90 transition-colors"
           >
+            <Home className="w-5 h-5" />
             Voltar ao Início
-          </Button>
+          </a>
         </div>
       </Container>
     </div>
