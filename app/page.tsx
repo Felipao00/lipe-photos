@@ -5,97 +5,86 @@ import { motion } from 'framer-motion';
 import { Container } from '@/components/ui/Container';
 import { GalleryGrid } from '@/components/gallery/GalleryGrid';
 import { AdminPanel } from '@/components/admin/AdminPanel';
+import { supabase } from '@/lib/supabase';
 
 export default function HomePage() {
   const [photos, setPhotos] = useState<any[]>([]);
   const [aboutText, setAboutText] = useState('');
   const [musicFile, setMusicFile] = useState('/audio/musica.mp3');
+  const [logoUrl, setLogoUrl] = useState('');
 
   useEffect(() => {
     loadData();
   }, []);
 
   const loadData = async () => {
-    try {
-      const res = await fetch('/api/admin/data');
-      const data = await res.json();
+    const { data } = await supabase
+      .from('site_data')
+      .select('*')
+      .eq('id', 1)
+      .single();
+    
+    if (data) {
       setPhotos(data.photos || []);
       setAboutText(data.about || '');
       setMusicFile(data.music || '/audio/musica.mp3');
-    } catch {}
+      setLogoUrl(data.logo || '');
+    }
+  };
+
+  const uploadFile = async (file: File): Promise<string> => {
+    const fileName = `${Date.now()}-${file.name}`;
+    await supabase.storage
+      .from('uploads')
+      .upload(fileName, file);
+    
+    const { data } = supabase.storage
+      .from('uploads')
+      .getPublicUrl(fileName);
+    
+    return data.publicUrl;
   };
 
   const handlePhotoUpload = async (file: File, title: string) => {
-    const formData = new FormData();
-    formData.append('file', file);
-    formData.append('type', 'photo');
-    const uploadRes = await fetch('/api/admin/upload', { method: 'POST', body: formData });
-    const { url } = await uploadRes.json();
-
+    const url = await uploadFile(file);
     const newPhoto = {
       id: Date.now().toString(),
-      slug: file.name,
       title: title || file.name,
       image: url,
       date: new Date().toISOString(),
     };
-
-    await fetch('/api/admin/data', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ photo: newPhoto }),
-    });
-    loadData();
+    const newPhotos = [...photos, newPhoto];
+    setPhotos(newPhotos);
+    
+    await supabase
+      .from('site_data')
+      .update({ photos: newPhotos })
+      .eq('id', 1);
   };
 
   const handlePhotoDelete = async (id: string) => {
-    await fetch('/api/admin/data', {
-      method: 'DELETE',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ id }),
-    });
-    loadData();
+    const newPhotos = photos.filter(p => p.id !== id);
+    setPhotos(newPhotos);
+    await supabase.from('site_data').update({ photos: newPhotos }).eq('id', 1);
   };
 
   const handleAboutSave = async (text: string) => {
-    await fetch('/api/admin/data', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ about: text }),
-    });
     setAboutText(text);
+    await supabase.from('site_data').update({ about: text }).eq('id', 1);
   };
 
   const handleMusicUpload = async (file: File) => {
-    const formData = new FormData();
-    formData.append('file', file);
-    formData.append('type', 'audio');
-    const uploadRes = await fetch('/api/admin/upload', { method: 'POST', body: formData });
-    const { url } = await uploadRes.json();
-
-    await fetch('/api/admin/data', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ music: url }),
-    });
+    const url = await uploadFile(file);
     setMusicFile(url);
+    await supabase.from('site_data').update({ music: url }).eq('id', 1);
   };
 
-const handleLogoUpload = async (file: File) => {
-  const formData = new FormData();
-  formData.append('file', file);
-  formData.append('type', 'photo');
-  const uploadRes = await fetch('/api/admin/upload', { method: 'POST', body: formData });
-  const { url } = await uploadRes.json();
-
-  await fetch('/api/admin/data', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ logo: url }),
-  });
-  
-  window.location.reload();
-};
+  const handleLogoUpload = async (file: File) => {
+    const url = await uploadFile(file);
+    setLogoUrl(url);
+    await supabase.from('site_data').update({ logo: url }).eq('id', 1);
+    window.location.reload();
+  };
 
   return (
     <>
@@ -129,8 +118,7 @@ const handleLogoUpload = async (file: File) => {
               transition={{ duration: 0.6, delay: 1 }}
               className="text-lg md:text-xl text-text-secondary font-light max-w-xl mx-auto leading-relaxed"
             >
-              Um olhar particular sobre o mundo.<br />
-              Fotografias que nascem do silêncio e da observação.
+              {aboutText || 'Um olhar particular sobre o mundo.'}
             </motion.p>
           </motion.div>
         </Container>
@@ -138,12 +126,11 @@ const handleLogoUpload = async (file: File) => {
 
       <GalleryGrid photos={photos} />
 
-      {/* Painel Admin - só você vê o botão */}
       <AdminPanel
         photos={photos}
         aboutText={aboutText}
         musicFile={musicFile}
-        logoUrl=""
+        logoUrl={logoUrl}
         onPhotoUpload={handlePhotoUpload}
         onPhotoDelete={handlePhotoDelete}
         onAboutSave={handleAboutSave}
