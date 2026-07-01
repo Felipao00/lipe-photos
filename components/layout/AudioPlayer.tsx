@@ -10,11 +10,10 @@ export function AudioPlayer() {
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
   useEffect(() => {
-    audioRef.current = new Audio('/audio/music01.mp3');
+    audioRef.current = new Audio('/audio/musica.mp3');
     audioRef.current.loop = true;
     audioRef.current.volume = 0.2;
 
-    // Tenta tocar automaticamente
     const playPromise = audioRef.current.play();
     
     if (playPromise !== undefined) {
@@ -23,7 +22,6 @@ export function AudioPlayer() {
           setIsPlaying(true);
         })
         .catch(() => {
-          // Se bloquear, mostra o botão
           setShowButton(true);
         });
     }
@@ -56,17 +54,17 @@ export function AudioPlayer() {
     <AnimatePresence>
       {showButton && (
         <motion.button
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, scale: 0.8 }}
+          animate={{ opacity: 1, scale: 1 }}
+          exit={{ opacity: 0, scale: 0.8 }}
           onClick={togglePlay}
-          className="fixed bottom-6 right-6 z-50 p-3 rounded-full bg-white/[0.03] backdrop-blur-xl border border-white/[0.08] text-text-muted hover:text-text-primary hover:border-white/[0.15] transition-all duration-300"
+          className="fixed bottom-5 left-5 z-40 p-3 rounded-full bg-white/[0.05] backdrop-blur-xl border border-white/[0.08] text-text-muted hover:text-text-primary transition-all"
           title={isPlaying ? 'Pausar música' : 'Tocar música'}
         >
           {isPlaying ? (
-            <Volume2 className="w-4 h-4" />
+            <Volume2 className="w-5 h-5" />
           ) : (
-            <VolumeX className="w-4 h-4" />
+            <VolumeX className="w-5 h-5" />
           )}
         </motion.button>
       )}
