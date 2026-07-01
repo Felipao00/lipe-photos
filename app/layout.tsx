@@ -6,6 +6,7 @@ import { Header } from '@/components/layout/Header';
 import { Footer } from '@/components/layout/Footer';
 import { AudioPlayer } from '@/components/layout/AudioPlayer';
 import { supabase } from '@/lib/supabase';
+import { themes, ThemeName } from '@/lib/themes';
 import './globals.css';
 
 const inter = Inter({
@@ -28,28 +29,34 @@ const tangerine = Tangerine({
   weight: ['400', '700'],
 });
 
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   const [logoUrl, setLogoUrl] = useState('');
+  const [theme, setTheme] = useState<ThemeName>('black');
+  const [mounted, setMounted] = useState(false);
 
-  const loadLogo = async () => {
-    const { data } = await supabase
-      .from('site_data')
-      .select('logo')
-      .eq('id', 1)
-      .single();
-    
-    if (data?.logo) {
-      setLogoUrl(data.logo);
+  const loadData = async () => {
+    const { data } = await supabase.from('site_data').select('*').eq('id', 1).single();
+    if (data) {
+      setLogoUrl(data.logo || '');
+      if (data.theme) setTheme(data.theme);
     }
+    setMounted(true);
   };
 
+  useEffect(() => { loadData(); }, []);
+
   useEffect(() => {
-    loadLogo();
-  }, []);
+    if (!mounted) return;
+    const t = themes[theme];
+    const root = document.documentElement;
+    root.style.setProperty('--background', t.background);
+    root.style.setProperty('--surface', t.surface);
+    root.style.setProperty('--text-primary', t.textPrimary);
+    root.style.setProperty('--text-secondary', t.textSecondary);
+    root.style.setProperty('--text-muted', t.textMuted);
+    root.style.setProperty('--accent', t.accent);
+    root.style.setProperty('--border', t.border);
+  }, [theme, mounted]);
 
   return (
     <html lang="pt-BR" className={`${inter.variable} ${playfair.variable} ${tangerine.variable}`}>

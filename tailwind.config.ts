@@ -9,13 +9,13 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        background: '#0A0A0A',
-        surface: '#111111',
-        'text-primary': '#F5F0EB',
-        'text-secondary': '#A09890',
-        'text-muted': '#6B6560',
-        accent: '#F5F0EB',
-        border: '#1F1F1F',
+        background: 'var(--background)',
+        surface: 'var(--surface)',
+        'text-primary': 'var(--text-primary)',
+        'text-secondary': 'var(--text-secondary)',
+        'text-muted': 'var(--text-muted)',
+        accent: 'var(--accent)',
+        border: 'var(--border)',
       },
       fontFamily: {
         display: ['var(--font-display)', 'serif'],

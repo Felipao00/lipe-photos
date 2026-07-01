@@ -6,12 +6,14 @@ import { Container } from '@/components/ui/Container';
 import { GalleryGrid } from '@/components/gallery/GalleryGrid';
 import { AdminPanel } from '@/components/admin/AdminPanel';
 import { supabase } from '@/lib/supabase';
+import { ThemeName } from '@/lib/themes';
 
 export default function HomePage() {
   const [photos, setPhotos] = useState<any[]>([]);
   const [aboutText, setAboutText] = useState('');
   const [musicFile, setMusicFile] = useState('/audio/musica.mp3');
   const [logoUrl, setLogoUrl] = useState('');
+  const [theme, setTheme] = useState<ThemeName>('black');
 
   useEffect(() => {
     loadData();
@@ -29,19 +31,14 @@ export default function HomePage() {
       setAboutText(data.about || '');
       setMusicFile(data.music || '/audio/musica.mp3');
       setLogoUrl(data.logo || '');
+      if (data.theme) setTheme(data.theme);
     }
   };
 
   const uploadFile = async (file: File): Promise<string> => {
     const fileName = `${Date.now()}-${file.name}`;
-    await supabase.storage
-      .from('uploads')
-      .upload(fileName, file);
-    
-    const { data } = supabase.storage
-      .from('uploads')
-      .getPublicUrl(fileName);
-    
+    await supabase.storage.from('uploads').upload(fileName, file);
+    const { data } = supabase.storage.from('uploads').getPublicUrl(fileName);
     return data.publicUrl;
   };
 
@@ -55,11 +52,7 @@ export default function HomePage() {
     };
     const newPhotos = [...photos, newPhoto];
     setPhotos(newPhotos);
-    
-    await supabase
-      .from('site_data')
-      .update({ photos: newPhotos })
-      .eq('id', 1);
+    await supabase.from('site_data').update({ photos: newPhotos }).eq('id', 1);
   };
 
   const handlePhotoDelete = async (id: string) => {
@@ -79,10 +72,21 @@ export default function HomePage() {
     await supabase.from('site_data').update({ music: url }).eq('id', 1);
   };
 
+  const handleMusicUrl = async (url: string) => {
+    setMusicFile(url);
+    await supabase.from('site_data').update({ music: url }).eq('id', 1);
+  };
+
   const handleLogoUpload = async (file: File) => {
     const url = await uploadFile(file);
     setLogoUrl(url);
     await supabase.from('site_data').update({ logo: url }).eq('id', 1);
+    window.location.reload();
+  };
+
+  const handleThemeChange = async (newTheme: ThemeName) => {
+    setTheme(newTheme);
+    await supabase.from('site_data').update({ theme: newTheme }).eq('id', 1);
     window.location.reload();
   };
 
@@ -131,11 +135,14 @@ export default function HomePage() {
         aboutText={aboutText}
         musicFile={musicFile}
         logoUrl={logoUrl}
+        theme={theme}
         onPhotoUpload={handlePhotoUpload}
         onPhotoDelete={handlePhotoDelete}
         onAboutSave={handleAboutSave}
         onMusicUpload={handleMusicUpload}
+        onMusicUrl={handleMusicUrl}
         onLogoUpload={handleLogoUpload}
+        onThemeChange={handleThemeChange}
       />
     </>
   );
