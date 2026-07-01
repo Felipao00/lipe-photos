@@ -88,18 +88,12 @@ const handleLogoUpload = async (file: File) => {
   const uploadRes = await fetch('/api/admin/upload', { method: 'POST', body: formData });
   const { url } = await uploadRes.json();
 
-  const saveRes = await fetch('/api/admin/data', {
+  await fetch('/api/admin/data', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ logo: url }),
   });
   
-  const data = await saveRes.json();
-  
-  // Atualiza o estado local
-  loadData();
-  
-  // Recarrega a página pra atualizar o Header
   window.location.reload();
 };
 
