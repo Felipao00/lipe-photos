@@ -20,6 +20,7 @@ const config: Config = {
       fontFamily: {
         display: ['var(--font-display)', 'serif'],
         body: ['var(--font-body)', 'sans-serif'],
+        signature: ['var(--font-signature)', 'cursive'],
       },
     },
   },

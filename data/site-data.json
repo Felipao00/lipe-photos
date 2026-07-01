@@ -1,0 +1,42 @@
+{
+  "photos": [
+    {
+      "id": "1782906022441",
+      "slug": "foto01.jpg",
+      "title": "foto01.jpg",
+      "image": "/photos/foto01.jpg",
+      "date": "2026-07-01T11:40:22.441Z"
+    },
+    {
+      "id": "1782906034611",
+      "slug": "foto02.jpg",
+      "title": "foto02.jpg",
+      "image": "/photos/foto02.jpg",
+      "date": "2026-07-01T11:40:34.611Z"
+    },
+    {
+      "id": "1782906039214",
+      "slug": "foto03.jpg",
+      "title": "foto03.jpg",
+      "image": "/photos/foto03.jpg",
+      "date": "2026-07-01T11:40:39.214Z"
+    },
+    {
+      "id": "1782906046694",
+      "slug": "foto04.jpg",
+      "title": "foto04.jpg",
+      "image": "/photos/foto04.jpg",
+      "date": "2026-07-01T11:40:46.694Z"
+    },
+    {
+      "id": "1782906703633",
+      "slug": "foto05.jpg",
+      "title": "foto05.jpg",
+      "image": "/photos/foto05.jpg",
+      "date": "2026-07-01T11:51:43.633Z"
+    }
+  ],
+  "about": "",
+  "music": "/audio/musica.mp3",
+  "logo": "/photos/última.jpg"
+}

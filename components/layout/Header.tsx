@@ -10,7 +10,15 @@ const navItems = [
   { label: 'Sobre', href: '/about' },
 ];
 
-function LogoFlower() {
+function SiteLogo({ logoUrl }: { logoUrl?: string }) {
+  if (logoUrl) {
+    return (
+      <div className="w-[22px] h-[22px] rounded-full overflow-hidden border border-white/[0.1] flex-shrink-0">
+        <img src={logoUrl} alt="Logo" className="w-full h-full object-cover" />
+      </div>
+    );
+  }
+
   return (
     <svg
       width="22"
@@ -44,7 +52,7 @@ function LogoFlower() {
   );
 }
 
-export function Header() {
+export function Header({ logoUrl }: { logoUrl?: string }) {
   const pathname = usePathname();
 
   return (
@@ -58,7 +66,7 @@ export function Header() {
         <div className="flex items-center justify-between">
           <Link href="/" className="flex items-center gap-2.5 group">
             <div className="text-text-primary group-hover:text-text-secondary transition-colors duration-500">
-              <LogoFlower />
+              <SiteLogo logoUrl={logoUrl} />
             </div>
             <div className="flex items-baseline gap-1">
               <span className="text-text-primary font-display text-base tracking-tight">
